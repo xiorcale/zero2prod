@@ -1,0 +1,16 @@
+meta {
+  name: subscriptions
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/subscriptions
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  email: abc@mail.com
+  name: abc
+}

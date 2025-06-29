@@ -1,16 +1,14 @@
 use sqlx::PgPool;
 use std::net::TcpListener;
-use zero2prod::{configuration::get_configuration, startup::run};
+use zero2prod::{config::Config, startup::run};
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    let configuration = get_configuration().expect("Failed to read configuration.");
-    let connection_pool = PgPool::connect(&configuration.database.connection_string())
-        .await
-        .expect("Failed to connect to Postgres");
+    let config = Config::load();
+    let pool = config.database.pool().await;
 
-    let address = format!("127.0.0.1:{}", configuration.application_port);
+    let address = format!("127.0.0.1:{}", config.application_port);
     let listener = TcpListener::bind(address)?;
 
-    run(listener, connection_pool)?.await
+    run(listener, pool)?.await
 }
